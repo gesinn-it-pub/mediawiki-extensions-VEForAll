@@ -294,7 +294,7 @@
 	};
 	mw.veForAll.Target.prototype.setDir = function () {
 		const view = this.surface.getView(),
-			dir = $( 'body' ).is( '.rtl' ) ? 'rtl' : 'ltr';
+			dir = document.body.classList.contains( 'rtl' ) ? 'rtl' : 'ltr';
 		if ( view ) {
 			view.getDocument().setDir( dir );
 		}
