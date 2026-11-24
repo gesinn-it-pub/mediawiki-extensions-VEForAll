@@ -63,8 +63,14 @@
 		} );
 	}() );
 
+	// The group with the switch to the wikitext editor. The wide target has its own list of
+	// groups and adds this group as well.
+	mw.veForAll.Target.static.switchEditorGroup = {
+		name: 've4aSwitch', align: 'after', include: [ 've4aSwitchEditor' ]
+	};
+
 	mw.veForAll.Target.static.toolbarGroups = mw.veForAll.Target.static.toolbarGroups.concat( [
-		{ name: 've4aSwitch', align: 'after', include: [ 've4aSwitchEditor' ] }
+		mw.veForAll.Target.static.switchEditorGroup
 	] );
 
 	// Allow pasting links

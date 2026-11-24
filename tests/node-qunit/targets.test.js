@@ -33,3 +33,11 @@ QUnit.test( 'header texts of the groups are resolved lazily', ( assert ) => {
 	assert.strictEqual( typeof group.header, 'function' );
 	assert.strictEqual( group.header(), 'visualeditor-toolbar-paragraph-format' );
 } );
+
+QUnit.test( 'the wide target offers the switch to the wikitext editor', ( assert ) => {
+	const group = getGroup( mediaWiki.veForAll.Targetwide, 've4aSwitch' );
+
+	assert.notStrictEqual( group, undefined, 'the group exists' );
+	assert.deepEqual( group && group.include, [ 've4aSwitchEditor' ] );
+	assert.strictEqual( group && group.align, 'after' );
+} );

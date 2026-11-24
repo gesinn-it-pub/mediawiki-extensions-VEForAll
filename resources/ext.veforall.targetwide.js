@@ -32,7 +32,7 @@
 				x.title = OO.ui.deferMsg( x.title );
 			}
 			return x;
-		} );
+		} ).concat( [ ve.copy( mw.veForAll.Target.static.switchEditorGroup ) ] );
 	}() );
 
 	ve.init.mw.targetFactory.register( mw.veForAll.Targetwide );
