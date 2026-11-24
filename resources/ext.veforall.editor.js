@@ -99,7 +99,7 @@
 	mw.veForAll.Editor.prototype.init = function ( content ) {
 		this.target = this.createTarget();
 
-		$.each( this.initCallbacks, ( k, callback ) => {
+		this.initCallbacks.forEach( ( callback ) => {
 			callback.apply( this );
 		} );
 	};
