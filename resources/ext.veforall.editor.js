@@ -29,6 +29,10 @@
 		// mixin constructor
 		OO.EventEmitter.call( this );
 
+		// Callbacks to execute when VE is fully loaded, for calls made before that. Every editor
+		// has its own list; a list shared by all editors would run them in editors created later.
+		this.initCallbacks = [];
+
 		// node the editor is associated with.
 		this.$node = $( $node );
 
@@ -47,11 +51,6 @@
 	};
 
 	OO.mixinClass( mw.veForAll.Editor, OO.EventEmitter );
-
-	/**
-	 * List of callbacks to execute when VE is fully loaded
-	 */
-	mw.veForAll.Editor.prototype.initCallbacks = [];
 
 	mw.veForAll.Editor.prototype.createTarget = function () {
 		const self = this;

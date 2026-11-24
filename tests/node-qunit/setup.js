@@ -53,11 +53,21 @@ const toolbarConfig = {
 	]
 };
 
+// jQuery is only called by the editor constructor, to mark the textarea as pending.
+const chainable = { prop: () => chainable, addClass: () => chainable };
+global.jQuery = () => chainable;
+
 global.mediaWiki = {
 	config: {
-		get: ( name ) => toolbarConfig[ name ]
+		get: ( name ) => name === 'wgVisualEditorConfig' ? { pluginModules: [] } : toolbarConfig[ name ]
+	},
+	loader: {
+		getState: () => 'ready',
+		// VisualEditor is never loaded here, so the editor stays in the state before it is ready.
+		using: () => {}
 	}
 };
 
 require( '../../resources/ext.veforall.target.js' );
 require( '../../resources/ext.veforall.targetwide.js' );
+require( '../../resources/ext.veforall.editor.js' );
