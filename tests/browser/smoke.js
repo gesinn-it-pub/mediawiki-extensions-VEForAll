@@ -175,6 +175,43 @@ async function checkMultipleInstances( browser ) {
 	await page.close();
 }
 
+async function checkRemovedInstance( browser ) {
+	const title = `Smoke_Removed_${ Date.now() }`;
+	const page = await browser.newPage();
+	const errors = [];
+	page.on( 'pageerror', ( error ) => errors.push( error.message ) );
+
+	await page.goto( `${ BASE_URL }/index.php?title=Special:FormEdit/VEForAllSmokeMultiple/${ title }` );
+	await waitForEditors( page, 1 );
+	await page.locator( '.multipleTemplateAdder' ).click();
+	await waitForEditors( page, 2 );
+	await typeIntoEditor( page, 0, 'removed' );
+	await typeIntoEditor( page, 1, 'kept' );
+
+	await page.locator( '.multipleTemplateInstance:not(.multipleTemplateStarter) a.removeButton' )
+		.first().click();
+	await page.locator( '.multipleTemplateInstance:not(.multipleTemplateStarter)' ).nth( 1 )
+		.waitFor( { state: 'detached' } );
+
+	await page.locator( '#wpSave' ).click();
+	await page.waitForURL(
+		( url ) => url.href.includes( title ) && !url.href.includes( 'Special:FormEdit' ),
+		{ timeout: 30000 }
+	).catch( async () => {
+		const messages = await page.locator( '.cdx-message, .errorbox, .error' ).allTextContents();
+		check( false, `removed instance: the form was not saved ${ messages.join( ' | ' ).trim() }` );
+	} );
+
+	const saved = await ( await page.request.get( `${ BASE_URL }/index.php?title=${ title }&action=raw` ) ).text();
+	check(
+		/^\{\{VEForAllSmokeMultiple\s*\|text=kept\s*\}\}$/.test( saved ),
+		`removed instance: only the remaining entry is saved ${ JSON.stringify( saved ) }`
+	);
+	check( errors.length === 0, `removed instance: no JavaScript error on the page ${ errors.join( ' | ' ) }` );
+
+	await page.close();
+}
+
 ( async () => {
 	createPage( 'Template:VEForAllSmoke', '<includeonly>{{{text|}}}</includeonly>' );
 	for ( const variant of VARIANTS ) {
@@ -195,6 +232,7 @@ async function checkMultipleInstances( browser ) {
 			await checkVariant( browser, variant );
 		}
 		await checkMultipleInstances( browser );
+		await checkRemovedInstance( browser );
 	} finally {
 		await browser.close();
 	}
