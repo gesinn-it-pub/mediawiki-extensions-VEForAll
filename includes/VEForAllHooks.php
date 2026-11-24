@@ -186,9 +186,11 @@ class VEForAllHooks {
 	 * @throws MWException
 	 */
 	public static function getVeToolbarConfig( $type = 'normal' ) {
+		// Hand the hooks a copy, so that their changes do not accumulate in the defaults.
+		$config = self::$defaultConfig[ $type ];
 		MediaWikiServices::getInstance()->getHookContainer()
-			->run( 'VEForAllToolbarConfig' . ucfirst( $type ), [ &self::$defaultConfig[ $type ] ] );
-		return array_values( self::$defaultConfig[ $type ] );
+			->run( 'VEForAllToolbarConfig' . ucfirst( $type ), [ &$config ] );
+		return array_values( $config );
 	}
 
 }

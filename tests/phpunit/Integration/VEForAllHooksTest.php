@@ -56,6 +56,26 @@ class VEForAllHooksTest extends MediaWikiIntegrationTestCase {
 		$this->assertSame( [ 'include' => [ 'added-by-hook' ] ], end( $config ) );
 	}
 
+	/**
+	 * @dataProvider provideToolbarTypes
+	 */
+	public function testToolbarConfigStartsFromTheDefaultsOnEveryCall( string $type, string $hook ): void {
+		$defaults = VEForAllHooks::getVeToolbarConfig( $type );
+
+		$this->setTemporaryHook( $hook, static function ( array &$config ) {
+			$config[] = [ 'include' => [ 'added-by-hook' ] ];
+		} );
+		VEForAllHooks::getVeToolbarConfig( $type );
+		VEForAllHooks::getVeToolbarConfig( $type );
+		$this->clearHook( $hook );
+
+		$this->assertSame(
+			$defaults,
+			VEForAllHooks::getVeToolbarConfig( $type ),
+			'changes made by a hook handler must not leak into later calls'
+		);
+	}
+
 	public function testGlobalVariablesExposeBothToolbarConfigs(): void {
 		$vars = [];
 
