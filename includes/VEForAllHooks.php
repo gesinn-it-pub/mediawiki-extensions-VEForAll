@@ -12,139 +12,70 @@ use Skin;
 
 class VEForAllHooks implements BeforePageDisplayHook, MakeGlobalVariablesScriptHook {
 
-	/** @var array[] */
-	private static $defaultConfig = [
-		'normal' => [
-			[
-				'name' => 'paragraph-format',
-				'header' => 'visualeditor-toolbar-paragraph-format',
-				'title' => 'visualeditor-toolbar-format-tooltip',
-				'type' => 'menu',
-				'include' => [
-					'group' => 'format'
-				],
-				'promote' => [
-					'paragraph'
-				],
-				'demote' => [
-					'preformatted',
-					'blockquote'
-				]
+	/** @var array[] The groups of the toolbar. The wide toolbar adds the media button. */
+	private const TOOLBAR_GROUPS = [
+		[
+			'name' => 'paragraph-format',
+			'header' => 'visualeditor-toolbar-paragraph-format',
+			'title' => 'visualeditor-toolbar-format-tooltip',
+			'type' => 'menu',
+			'include' => [
+				'group' => 'format'
 			],
-			[
-				'name' => 'text-style',
-				'header' => 'visualeditor-toolbar-text-style',
-				'title' => 'visualeditor-toolbar-style-tooltip',
-				'include' => [
-					'bold',
-					'italic',
-					'moreTextStyle'
-				]
+			'promote' => [
+				'paragraph'
 			],
-			[
-				'name' => 'links',
-				'include' => [
-					'link'
-				]
-			],
-			[
-				'name' => 'structure',
-				'header' => 'visualeditor-toolbar-structure',
-				'title' => 'visualeditor-toolbar-structure',
-				'type' => 'list',
-				'icon' => 'listBullet',
-				'include' => [
-					'group' => 'structure'
-				],
-				'demote' => [
-					'outdent',
-					'indent'
-				]
-			],
-			[
-				'name' => 'insert',
-				'header' => 'visualeditor-toolbar-insert',
-				'title' => 'visualeditor-toolbar-insert',
-				'type' => 'list',
-				'icon' => 'add',
-				'label' => '',
-				'include' => [
-					'insertTable',
-					'specialCharacter',
-					'warningblock',
-					'preformatted',
-					'infoblock',
-					'ideablock',
-					'dontblock',
-					'pinblock',
-				]
+			'demote' => [
+				'preformatted',
+				'blockquote'
 			]
 		],
-		'wide' => [
-			[
-				'name' => 'paragraph-format',
-				'header' => 'visualeditor-toolbar-paragraph-format',
-				'title' => 'visualeditor-toolbar-format-tooltip',
-				'type' => 'menu',
-				'include' => [
-					'group' => 'format'
-				],
-				'promote' => [
-					'paragraph'
-				],
-				'demote' => [
-					'preformatted',
-					'blockquote'
-				]
+		[
+			'name' => 'text-style',
+			'header' => 'visualeditor-toolbar-text-style',
+			'title' => 'visualeditor-toolbar-style-tooltip',
+			'include' => [
+				'bold',
+				'italic',
+				'moreTextStyle'
+			]
+		],
+		[
+			'name' => 'links',
+			'include' => [
+				'link'
+			]
+		],
+		[
+			'name' => 'structure',
+			'header' => 'visualeditor-toolbar-structure',
+			'title' => 'visualeditor-toolbar-structure',
+			'type' => 'list',
+			'icon' => 'listBullet',
+			'include' => [
+				'group' => 'structure'
 			],
-			[
-				'name' => 'text-style',
-				'header' => 'visualeditor-toolbar-text-style',
-				'title' => 'visualeditor-toolbar-style-tooltip',
-				'include' => [
-					'bold',
-					'italic',
-					'moreTextStyle'
-				]
-			],
-			[
-				'name' => 'links',
-				'include' => [
-					'link'
-				]
-			],
-			[
-				'name' => 'structure',
-				'header' => 'visualeditor-toolbar-structure',
-				'title' => 'visualeditor-toolbar-structure',
-				'type' => 'list',
-				'icon' => 'listBullet',
-				'include' => [
-					'group' => 'structure'
-				],
-				'demote' => [
-					'outdent',
-					'indent'
-				]
-			],
-			[
-				'name' => 'insert',
-				'header' => 'visualeditor-toolbar-insert',
-				'title' => 'visualeditor-toolbar-insert',
-				'type' => 'list',
-				'icon' => 'add',
-				'label' => '',
-				'include' => [
-					'media',
-					'insertTable',
-					'specialCharacter',
-					'warningblock',
-					'preformatted',
-					'infoblock',
-					'ideablock',
-					'dontblock',
-					'pinblock',
-				]
+			'demote' => [
+				'outdent',
+				'indent'
+			]
+		],
+		[
+			'name' => 'insert',
+			'header' => 'visualeditor-toolbar-insert',
+			'title' => 'visualeditor-toolbar-insert',
+			'type' => 'list',
+			'icon' => 'add',
+			'label' => '',
+			'include' => [
+				'insertTable',
+				'specialCharacter',
+				'warningblock',
+				'preformatted',
+				'infoblock',
+				'ideablock',
+				'dontblock',
+				'pinblock',
 			]
 		]
 	];
@@ -187,11 +118,29 @@ class VEForAllHooks implements BeforePageDisplayHook, MakeGlobalVariablesScriptH
 	/**
 	 * @param string $type 'normal' or 'wide'
 	 *
+	 * @return array[] The groups before the VEForAllToolbarConfig* hooks have run
+	 */
+	private static function getDefaultToolbarGroups( string $type ): array {
+		$groups = self::TOOLBAR_GROUPS;
+		if ( $type === 'wide' ) {
+			foreach ( $groups as &$group ) {
+				if ( $group['name'] === 'insert' ) {
+					array_unshift( $group['include'], 'media' );
+				}
+			}
+			unset( $group );
+		}
+		return $groups;
+	}
+
+	/**
+	 * @param string $type 'normal' or 'wide'
+	 *
 	 * @return array The toolbar groups, after the VEForAllToolbarConfig* hooks have run
 	 */
 	public function getToolbarConfig( string $type = 'normal' ): array {
 		// Hand the hooks a copy, so that their changes do not accumulate in the defaults.
-		$config = self::$defaultConfig[ $type ];
+		$config = self::getDefaultToolbarGroups( $type );
 		$this->hookContainer->run( 'VEForAllToolbarConfig' . ucfirst( $type ), [ &$config ] );
 		return array_values( $config );
 	}
