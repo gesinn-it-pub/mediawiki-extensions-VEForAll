@@ -23,13 +23,13 @@ jobs:
           - mediawiki_version: '1.43'
             php_version: '8.3'
             database_type: mysql
-            database_image: "mysql:8"
+            database_image: "mariadb:12.3"
             coverage: true
             experimental: false
           - mediawiki_version: '1.46'
             php_version: '8.4'
             database_type: mysql
-            database_image: "mysql:8"
+            database_image: "mariadb:12.3"
             coverage: false
             experimental: false
 

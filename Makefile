@@ -14,7 +14,7 @@ EXTENSION = VEForAll
 MW_VERSION    ?= 1.43
 PHP_VERSION   ?= 8.3
 DB_TYPE       ?= mysql
-DB_IMAGE      ?= "mysql:8"
+DB_IMAGE      ?= "mariadb:12.3"
 
 # composer
 COMPOSER_EXT  ?= true
