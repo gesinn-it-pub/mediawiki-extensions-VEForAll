@@ -145,7 +145,7 @@ class ApiParsoidUtils extends ApiBase {
 	 */
 	private function dieCustomUsageMessage( $message_name, $params = [] ) {
 		$errorMessage = $this->msg( $message_name, $params );
-		LoggerFactory::getInstance( 'VEForAll' )->error( $errorMessage );
+		LoggerFactory::getInstance( 'VEForAll' )->error( $errorMessage->inContentLanguage()->text() );
 		$this->dieWithError( [ ApiMessage::create( $errorMessage ) ] );
 	}
 
