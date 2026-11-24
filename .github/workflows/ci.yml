@@ -64,5 +64,5 @@ jobs:
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           slug: gesinn-it-pub/mediawiki-extensions-VEForAll
-          files: build/coverage/php/coverage.xml
+          files: build/coverage/php/coverage.xml,build/coverage/js/lcov.info
           disable_search: true
