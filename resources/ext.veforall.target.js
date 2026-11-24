@@ -82,26 +82,32 @@
 
 	// Static methods
 	mw.veForAll.Target.static.setSwitchable = function ( switchable ) {
-		const targetStatic = mw.veForAll.Target.static;
-
 		// FIXME this isn't supposed to be a global state thing, it's supposed to be
 		// variable per EditorWidget instance
 
-		// Remove any existing switch-related groups from toolbarGroups
-		targetStatic.toolbarGroups = targetStatic.toolbarGroups.filter(
-			( group ) => group.name !== 've4aSwitch'
-		);
+		// The wide target has its own list of groups, so change both lists.
+		[ mw.veForAll.Target, mw.veForAll.Targetwide ].forEach( ( targetClass ) => {
+			if ( !targetClass ) {
+				return;
+			}
+			const targetStatic = targetClass.static;
 
-		if ( switchable ) {
-			targetStatic.toolbarGroups = targetStatic.toolbarGroups.concat( [ {
-				name: 've4aSwitch',
-				type: 'list',
-				align: 'after',
-				icon: 'edit',
-				title: mw.msg( 'visualeditor-mweditmode-tooltip' ),
-				include: [ 'editModeVisual', 'editModeSource' ]
-			} ] );
-		}
+			// Remove any existing switch-related groups from toolbarGroups
+			targetStatic.toolbarGroups = targetStatic.toolbarGroups.filter(
+				( group ) => group.name !== 've4aSwitch'
+			);
+
+			if ( switchable ) {
+				targetStatic.toolbarGroups = targetStatic.toolbarGroups.concat( [ {
+					name: 've4aSwitch',
+					type: 'list',
+					align: 'after',
+					icon: 'edit',
+					title: mw.msg( 'visualeditor-mweditmode-tooltip' ),
+					include: [ 'editModeVisual', 'editModeSource' ]
+				} ] );
+			}
+		} );
 	};
 
 	/**

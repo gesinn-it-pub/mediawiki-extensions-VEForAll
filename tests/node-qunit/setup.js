@@ -61,6 +61,7 @@ global.mediaWiki = {
 	config: {
 		get: ( name ) => name === 'wgVisualEditorConfig' ? { pluginModules: [] } : toolbarConfig[ name ]
 	},
+	msg: ( key ) => key,
 	loader: {
 		getState: () => 'ready',
 		// VisualEditor is never loaded here, so the editor stays in the state before it is ready.
