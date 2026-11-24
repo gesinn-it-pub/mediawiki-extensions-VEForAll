@@ -82,7 +82,6 @@ class ApiParsoidUtils extends ApiBase {
 		if ( !in_array( $from, $validValues ) || !in_array( $to, $validValues ) ) {
 			$this->dieCustomUsageMessage( 'veforall-api-error-unsupported-conversion',
 				[ $from, $to ] );
-			return null;
 		}
 
 		if ( $from == 'wikitext' ) {
@@ -142,6 +141,7 @@ class ApiParsoidUtils extends ApiBase {
 	 * Die with a custom usage message.
 	 * @param string $message_name the name of the custom message
 	 * @param array $params parameters to the custom message
+	 * @return never
 	 */
 	private function dieCustomUsageMessage( $message_name, $params = [] ) {
 		$errorMessage = $this->msg( $message_name, $params );
