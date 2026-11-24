@@ -25,7 +25,7 @@
 	 * Name of this action
 	 *
 	 * @static
-	 * @property
+	 * @property {string}
 	 */
 	mw.veForAll.ui.SwitchEditorAction.static.name = 've4aSwitchEditor';
 
@@ -33,7 +33,7 @@
 	 * List of allowed methods for the action.
 	 *
 	 * @static
-	 * @property
+	 * @property {string[]}
 	 */
 	mw.veForAll.ui.SwitchEditorAction.static.methods = [ 'switch' ];
 

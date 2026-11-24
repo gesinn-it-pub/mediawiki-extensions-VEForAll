@@ -9,8 +9,8 @@
 	/**
 	 * Inherits from the stand-alone target.
 	 *
-	 * @param node
-	 * @param content
+	 * @param {jQuery} node Textarea the target belongs to
+	 * @param {string} content Initial content (HTML)
 	 * @class
 	 * @extends ve.init.mw.Target
 	 */

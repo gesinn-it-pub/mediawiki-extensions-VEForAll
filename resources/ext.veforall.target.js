@@ -10,8 +10,8 @@
 	/**
 	 * Inherits from the standard VE target.
 	 *
-	 * @param node
-	 * @param content
+	 * @param {jQuery} node Textarea the target belongs to
+	 * @param {string} content Initial content (HTML)
 	 * @class
 	 * @extends ve.init.mw.Target
 	 */
