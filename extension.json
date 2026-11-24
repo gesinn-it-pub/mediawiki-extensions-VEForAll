@@ -14,9 +14,8 @@
 			"VisualEditor": "*"
 		}
 	},
-	"AutoloadClasses": {
-		"VEForAll\\VEForAllHooks": "includes/VEForAllHooks.php",
-		"VEForAll\\ApiParsoidUtils": "includes/ApiParsoidUtils.php"
+	"AutoloadNamespaces": {
+		"VEForAll\\": "includes/"
 	},
 	"APIModules": {
 		"veforall-parsoid-utils": "VEForAll\\ApiParsoidUtils"
