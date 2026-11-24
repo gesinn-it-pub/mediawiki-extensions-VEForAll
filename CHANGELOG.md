@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.0] - 2026-11-24
+
+Raises the minimum MediaWiki version to 1.43, brings back the switch between the visual and the wikitext
+editor in editors with the class `toolbarOnTop` (missing since 0.8.1), and adds automated tests and continuous
+integration for PHP and JavaScript.
+
 ### Breaking Changes
 
 - Require MediaWiki 1.43 or newer (was 1.42) [`f263adb`](https://github.com/gesinn-it-pub/mediawiki-extensions-VEForAll/commit/f263adb)
@@ -30,10 +36,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fix changes of `VEForAllToolbarConfigNormal` and `VEForAllToolbarConfigWide` hook handlers piling up and affecting later toolbar configurations [`98b9b46`](https://github.com/gesinn-it-pub/mediawiki-extensions-VEForAll/commit/98b9b46)
 - Log API usage errors as text instead of an object [`96d5fe5`](https://github.com/gesinn-it-pub/mediawiki-extensions-VEForAll/commit/96d5fe5)
 
-## [0.8.1] - 2026-10-20
+Older releases: [0.x](CHANGELOG-0.x.md)
 
-Fixed support for MediaWiki 1.47 and removed unnecessary "uneditable element" warnings. See the
-[extension page](https://www.mediawiki.org/wiki/Extension:VEForAll) for the history of earlier versions.
-
-[Unreleased]: https://github.com/gesinn-it-pub/mediawiki-extensions-VEForAll/compare/0.8.1...HEAD
-[0.8.1]: https://github.com/gesinn-it-pub/mediawiki-extensions-VEForAll/releases/tag/0.8.1
+[Unreleased]: https://github.com/gesinn-it-pub/mediawiki-extensions-VEForAll/compare/1.0.0...HEAD
+[1.0.0]: https://github.com/gesinn-it-pub/mediawiki-extensions-VEForAll/compare/0.8.1...1.0.0
