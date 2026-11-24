@@ -1,6 +1,8 @@
 {
 	"name": "mediawiki/v-e-for-all",
+	"description": "Lets other extensions use VisualEditor in textareas",
 	"type": "mediawiki-extension",
+	"license": "GPL-2.0-or-later",
 	"require-dev": {
 		"mediawiki/mediawiki-codesniffer": "52.0.2",
 		"mediawiki/mediawiki-phan-config": "0.20.0",
