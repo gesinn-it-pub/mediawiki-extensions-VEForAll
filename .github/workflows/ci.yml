@@ -52,6 +52,10 @@ jobs:
         run: mkdir -p build/coverage && make ci-coverage
         if: matrix.coverage == true
 
+      - name: Run Phan
+        if: matrix.coverage == true
+        run: make composer-analyze
+
       - name: Upload coverage
         if: matrix.coverage == true
         uses: codecov/codecov-action@v7
