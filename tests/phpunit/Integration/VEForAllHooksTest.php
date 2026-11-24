@@ -4,13 +4,19 @@ namespace VEForAll\Tests\Integration;
 
 use MediaWiki\Context\RequestContext;
 use MediaWiki\Output\OutputPage;
+use MediaWiki\Title\Title;
 use MediaWikiIntegrationTestCase;
 use VEForAll\VEForAllHooks;
 
 /**
+ * @group Database
  * @covers \VEForAll\VEForAllHooks
  */
 class VEForAllHooksTest extends MediaWikiIntegrationTestCase {
+
+	private function newHooks(): VEForAllHooks {
+		return new VEForAllHooks( $this->getServiceContainer()->getHookContainer() );
+	}
 
 	/**
 	 * @return array[] Pairs of the toolbar type and the hook that must be run for it
@@ -26,7 +32,7 @@ class VEForAllHooksTest extends MediaWikiIntegrationTestCase {
 	 * @dataProvider provideToolbarTypes
 	 */
 	public function testToolbarConfigIsAListOfGroups( string $type ): void {
-		$config = VEForAllHooks::getVeToolbarConfig( $type );
+		$config = $this->newHooks()->getToolbarConfig( $type );
 
 		$this->assertNotEmpty( $config );
 		$this->assertSame( array_keys( $config ), range( 0, count( $config ) - 1 ), 'config is a list' );
@@ -50,7 +56,7 @@ class VEForAllHooksTest extends MediaWikiIntegrationTestCase {
 			$calls[] = $otherHook;
 		} );
 
-		$config = VEForAllHooks::getVeToolbarConfig( $type );
+		$config = $this->newHooks()->getToolbarConfig( $type );
 
 		$this->assertSame( [ $expectedHook ], $calls );
 		$this->assertSame( [ 'include' => [ 'added-by-hook' ] ], end( $config ) );
@@ -60,18 +66,18 @@ class VEForAllHooksTest extends MediaWikiIntegrationTestCase {
 	 * @dataProvider provideToolbarTypes
 	 */
 	public function testToolbarConfigStartsFromTheDefaultsOnEveryCall( string $type, string $hook ): void {
-		$defaults = VEForAllHooks::getVeToolbarConfig( $type );
+		$defaults = $this->newHooks()->getToolbarConfig( $type );
 
 		$this->setTemporaryHook( $hook, static function ( array &$config ) {
 			$config[] = [ 'include' => [ 'added-by-hook' ] ];
 		} );
-		VEForAllHooks::getVeToolbarConfig( $type );
-		VEForAllHooks::getVeToolbarConfig( $type );
+		$this->newHooks()->getToolbarConfig( $type );
+		$this->newHooks()->getToolbarConfig( $type );
 		$this->clearHook( $hook );
 
 		$this->assertSame(
 			$defaults,
-			VEForAllHooks::getVeToolbarConfig( $type ),
+			$this->newHooks()->getToolbarConfig( $type ),
 			'changes made by a hook handler must not leak into later calls'
 		);
 	}
@@ -79,17 +85,47 @@ class VEForAllHooksTest extends MediaWikiIntegrationTestCase {
 	public function testGlobalVariablesExposeBothToolbarConfigs(): void {
 		$vars = [];
 
-		VEForAllHooks::onMakeGlobalVariablesScript( $vars, RequestContext::getMain()->getOutput() );
+		$this->newHooks()->onMakeGlobalVariablesScript( $vars, RequestContext::getMain()->getOutput() );
 
-		$this->assertSame( VEForAllHooks::getVeToolbarConfig( 'normal' ), $vars['VEForAllToolbarNormal'] );
-		$this->assertSame( VEForAllHooks::getVeToolbarConfig( 'wide' ), $vars['VEForAllToolbarWide'] );
+		$this->assertSame( $this->newHooks()->getToolbarConfig( 'normal' ), $vars['VEForAllToolbarNormal'] );
+		$this->assertSame( $this->newHooks()->getToolbarConfig( 'wide' ), $vars['VEForAllToolbarWide'] );
+	}
+
+	public function testStaticAccessKeepsWorkingForOtherExtensions(): void {
+		$this->assertSame(
+			$this->newHooks()->getToolbarConfig( 'wide' ),
+			VEForAllHooks::getVeToolbarConfig( 'wide' )
+		);
+	}
+
+	public function testHandlerIsRegisteredForMakeGlobalVariablesScript(): void {
+		$vars = [];
+		// All handlers of the hook run, also the one of VisualEditor, which needs a page.
+		RequestContext::getMain()->setTitle( Title::makeTitle( NS_MAIN, 'Test' ) );
+		$out = RequestContext::getMain()->getOutput();
+
+		$this->getServiceContainer()->getHookContainer()
+			->run( 'MakeGlobalVariablesScript', [ &$vars, $out ] );
+
+		$this->assertArrayHasKey( 'VEForAllToolbarNormal', $vars );
+		$this->assertArrayHasKey( 'VEForAllToolbarWide', $vars );
+	}
+
+	public function testHandlerIsRegisteredForBeforePageDisplay(): void {
+		$context = RequestContext::getMain();
+		$output = new OutputPage( $context );
+
+		$this->getServiceContainer()->getHookContainer()
+			->run( 'BeforePageDisplay', [ $output, $context->getSkin() ] );
+
+		$this->assertContains( 'ext.veforall.core.desktop', $output->getModules() );
 	}
 
 	public function testDesktopModuleIsAddedToThePage(): void {
 		$context = RequestContext::getMain();
 		$output = new OutputPage( $context );
 
-		VEForAllHooks::onBeforePageDisplay( $output, $context->getSkin() );
+		$this->newHooks()->onBeforePageDisplay( $output, $context->getSkin() );
 
 		$this->assertContains( 'ext.veforall.core.desktop', $output->getModules() );
 	}

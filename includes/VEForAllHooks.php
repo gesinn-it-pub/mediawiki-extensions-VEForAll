@@ -3,11 +3,14 @@
 namespace VEForAll;
 
 use ExtensionRegistry;
+use MediaWiki\HookContainer\HookContainer;
 use MediaWiki\MediaWikiServices;
+use MediaWiki\Output\Hook\BeforePageDisplayHook;
+use MediaWiki\Output\Hook\MakeGlobalVariablesScriptHook;
 use OutputPage;
 use Skin;
 
-class VEForAllHooks {
+class VEForAllHooks implements BeforePageDisplayHook, MakeGlobalVariablesScriptHook {
 
 	/** @var array[] */
 	private static $defaultConfig = [
@@ -146,6 +149,12 @@ class VEForAllHooks {
 		]
 	];
 
+	private HookContainer $hookContainer;
+
+	public function __construct( HookContainer $hookContainer ) {
+		$this->hookContainer = $hookContainer;
+	}
+
 	/**
 	 * Implements BeforePageDisplay hook.
 	 * See https://www.mediawiki.org/wiki/Manual:Hooks/BeforePageDisplay
@@ -153,7 +162,7 @@ class VEForAllHooks {
 	 * @param OutputPage $output OutputPage object
 	 * @param Skin $skin Skin object that will be used to generate the page
 	 */
-	public static function onBeforePageDisplay( $output, $skin ) {
+	public function onBeforePageDisplay( $output, $skin ): void {
 		$services = MediaWikiServices::getInstance();
 		if ( !(
 			ExtensionRegistry::getInstance()->isLoaded( 'MobileFrontend' ) &&
@@ -170,22 +179,33 @@ class VEForAllHooks {
 	 * @param array &$vars
 	 * @param OutputPage $out
 	 */
-	public static function onMakeGlobalVariablesScript( &$vars, $out ) {
-		$vars[ 'VEForAllToolbarNormal' ] = self::getVeToolbarConfig( 'normal' );
-		$vars[ 'VEForAllToolbarWide' ] = self::getVeToolbarConfig( 'wide' );
+	public function onMakeGlobalVariablesScript( &$vars, $out ): void {
+		$vars[ 'VEForAllToolbarNormal' ] = $this->getToolbarConfig( 'normal' );
+		$vars[ 'VEForAllToolbarWide' ] = $this->getToolbarConfig( 'wide' );
 	}
 
 	/**
-	 * @param string $type
+	 * @param string $type 'normal' or 'wide'
+	 *
+	 * @return array The toolbar groups, after the VEForAllToolbarConfig* hooks have run
+	 */
+	public function getToolbarConfig( string $type = 'normal' ): array {
+		// Hand the hooks a copy, so that their changes do not accumulate in the defaults.
+		$config = self::$defaultConfig[ $type ];
+		$this->hookContainer->run( 'VEForAllToolbarConfig' . ucfirst( $type ), [ &$config ] );
+		return array_values( $config );
+	}
+
+	/**
+	 * @deprecated Use getToolbarConfig() of an instance instead. Kept because other extensions
+	 *  may call it statically.
+	 *
+	 * @param string $type 'normal' or 'wide'
 	 *
 	 * @return array
 	 */
 	public static function getVeToolbarConfig( $type = 'normal' ) {
-		// Hand the hooks a copy, so that their changes do not accumulate in the defaults.
-		$config = self::$defaultConfig[ $type ];
-		MediaWikiServices::getInstance()->getHookContainer()
-			->run( 'VEForAllToolbarConfig' . ucfirst( $type ), [ &$config ] );
-		return array_values( $config );
+		return ( new self( MediaWikiServices::getInstance()->getHookContainer() ) )->getToolbarConfig( $type );
 	}
 
 }
