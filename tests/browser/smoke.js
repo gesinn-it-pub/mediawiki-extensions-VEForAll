@@ -212,6 +212,69 @@ async function checkRemovedInstance( browser ) {
 	await page.close();
 }
 
+async function checkFailedConversion( browser ) {
+	const title = `Smoke_Failed_${ Date.now() }`;
+	const page = await browser.newPage();
+	const errors = [];
+	page.on( 'pageerror', ( error ) => errors.push( error.message ) );
+
+	await page.goto( `${ BASE_URL }/index.php?title=Special:FormEdit/VEForAllSmokeNormal/${ title }` );
+	await page.waitForFunction( () => {
+		const textarea = document.querySelector( 'textarea.visualeditor' );
+		return textarea && textarea.style.display === 'none';
+	}, null, { timeout: 90000 } );
+	await page.locator( '.ve-ce-documentNode' ).first().click( { position: { x: 100, y: 20 } } );
+	await page.waitForFunction(
+		() => document.querySelector( 'textarea.visualeditor' )
+			.classList.contains( 've-for-all-waiting-for-update' )
+	);
+	await page.keyboard.type( 'kept text' );
+	await page.waitForFunction(
+		() => $.fn.getVEInstances()[ 0 ].target.getSurface().getModel().getDocument()
+			.data.getText() === 'kept text'
+	);
+
+	// Let the conversion to wikitext fail, as it does when the server cannot be reached.
+	let failing = true;
+	await page.route( '**/api.php*', ( route ) => {
+		const body = route.request().postData() || '';
+		if ( failing && body.includes( 'veforall' ) && body.includes( 'from=html' ) ) {
+			return route.abort( 'failed' );
+		}
+		return route.continue();
+	} );
+	await page.locator( '#wpSave' ).click();
+
+	check(
+		await page.locator( '.mw-notification-type-error' ).first().waitFor( { timeout: 10000 } )
+			.then( () => true, () => false ),
+		'failed conversion: the user is told that the content could not be converted'
+	);
+	check(
+		await page.evaluate( () => !document.querySelector( 'textarea.visualeditor' ).disabled ),
+		'failed conversion: the field is released again'
+	);
+	check(
+		!page.url().includes( title ) || page.url().includes( 'Special:FormEdit' ),
+		'failed conversion: the form is not saved'
+	);
+
+	failing = false;
+	await page.locator( '#wpSave' ).click();
+	await page.waitForURL(
+		( url ) => url.href.includes( title ) && !url.href.includes( 'Special:FormEdit' ),
+		{ timeout: 30000 }
+	).catch( () => {} );
+	const saved = await ( await page.request.get( `${ BASE_URL }/index.php?title=${ title }&action=raw` ) ).text();
+	check(
+		/\|text=kept text\s*\}\}$/.test( saved ),
+		`failed conversion: saving again keeps the text ${ JSON.stringify( saved ) }`
+	);
+	check( errors.length === 0, `failed conversion: no JavaScript error on the page ${ errors.join( ' | ' ) }` );
+
+	await page.close();
+}
+
 ( async () => {
 	createPage( 'Template:VEForAllSmoke', '<includeonly>{{{text|}}}</includeonly>' );
 	for ( const variant of VARIANTS ) {
@@ -233,6 +296,7 @@ async function checkRemovedInstance( browser ) {
 		}
 		await checkMultipleInstances( browser );
 		await checkRemovedInstance( browser );
+		await checkFailedConversion( browser );
 	} finally {
 		await browser.close();
 	}

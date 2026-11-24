@@ -20,5 +20,6 @@
 	"veforall-api-error-unsupported-conversion": "Error message",
 	"veforall-api-error-unsupported-parser-conversion": "Error message",
 	"veforall-api-error-parsoid-error": "Error message",
-	"veforall-form-instances-not-minimized": "A warning message"
+	"veforall-form-instances-not-minimized": "A warning message",
+	"veforall-conversion-failed": "Error message shown as a notification when the conversion between wikitext and the visual editor content fails, for example because the server could not be reached. The editor can be used again afterwards."
 }

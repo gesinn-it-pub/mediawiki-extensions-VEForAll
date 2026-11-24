@@ -287,6 +287,14 @@
 
 			$( target.$element ).removeClass( 'oo-ui-texture-pending' );
 
+		}, ( ...rejection ) => {
+			// Free the field and tell the user, who can then save again. The marker for a change
+			// stays, so that the next attempt converts again. The promise stays rejected, so that
+			// Page Forms does not submit the form without the content.
+			$( target.$node ).prop( 'disabled', false ).removeClass( 'oo-ui-texture-pending' );
+			$( target.$element ).removeClass( 'oo-ui-texture-pending' );
+			mw.notify( mw.msg( 'veforall-conversion-failed' ), { type: 'error' } );
+			return $.Deferred().reject( ...rejection ).promise();
 		} );
 
 		return apiCall;
@@ -325,6 +333,10 @@
 				callback( target );
 			}
 
+		}, () => {
+			// The editor cannot start, so give the plain textarea back to the user.
+			$( target.$node ).prop( 'disabled', false ).removeClass( 'oo-ui-texture-pending' );
+			mw.notify( mw.msg( 'veforall-conversion-failed' ), { type: 'error' } );
 		} );
 	};
 
