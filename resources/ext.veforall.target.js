@@ -328,8 +328,8 @@
 			this.clearSurfaces();
 			// $textarea.hide();
 			// $(this.getSurface().$element).show();
-			this.convertToHtml( $textarea.val(), ( target ) => {
-				target.getSurface().getView().focus();
+			this.convertToHtml( $textarea.val(), ( convertedTarget ) => {
+				convertedTarget.getSurface().getView().focus();
 			} );
 
 			$textarea.parent().find( '.oo-ui-icon-eye' )
