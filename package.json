@@ -2,13 +2,16 @@
 	"name": "VEForAll",
 	"private": true,
 	"scripts": {
-		"test": "grunt test",
-		"test-coverage": "grunt test"
+		"test": "grunt test && npm run node-qunit",
+		"test-coverage": "grunt test && npm run node-qunit",
+		"node-qunit": "qunit --require ./tests/node-qunit/setup.js 'tests/node-qunit/**/*.test.js'"
 	},
 	"devDependencies": {
 		"eslint-config-wikimedia": "0.33.1",
 		"grunt": "1.6.3",
 		"grunt-banana-checker": "0.13.0",
-		"grunt-eslint": "24.3.0"
+		"grunt-eslint": "24.3.0",
+		"oojs": "7.1.0",
+		"qunit": "3.0.0"
 	}
 }

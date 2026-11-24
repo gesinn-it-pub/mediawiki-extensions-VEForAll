@@ -24,5 +24,22 @@
 		"no-jquery/no-sizzle": "warn",
 		"no-jquery/no-done-fail": "warn",
 		"prefer-const": "warn"
-	}
+	},
+	"overrides": [
+		{
+			"files": [
+				"tests/node-qunit/**/*.js"
+			],
+			"env": {
+				"node": true,
+				"es2021": true
+			},
+			"globals": {
+				"QUnit": "readonly"
+			},
+			"parserOptions": {
+				"sourceType": "script"
+			}
+		}
+	]
 }
