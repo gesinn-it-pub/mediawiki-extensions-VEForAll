@@ -82,6 +82,20 @@ class VEForAllHooksTest extends MediaWikiIntegrationTestCase {
 		);
 	}
 
+	public function testWideToolbarOnlyAddsTheMediaButtonToTheNormalOne(): void {
+		$normal = $this->newHooks()->getToolbarConfig( 'normal' );
+		$wide = $this->newHooks()->getToolbarConfig( 'wide' );
+
+		$this->assertSameSize( $normal, $wide, 'same groups' );
+		foreach ( $normal as $i => $group ) {
+			if ( $group['name'] === 'insert' ) {
+				$this->assertSame( array_merge( [ 'media' ], $group['include'] ), $wide[$i]['include'] );
+				unset( $group['include'], $wide[$i]['include'] );
+			}
+			$this->assertSame( $group, $wide[$i], 'group ' . $group['name'] );
+		}
+	}
+
 	public function testGlobalVariablesExposeBothToolbarConfigs(): void {
 		$vars = [];
 
