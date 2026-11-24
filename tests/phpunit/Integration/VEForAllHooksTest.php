@@ -126,7 +126,9 @@ class VEForAllHooksTest extends MediaWikiIntegrationTestCase {
 	}
 
 	public function testHandlerIsRegisteredForBeforePageDisplay(): void {
+		// All handlers of the hook run, also the one of VisualEditor, which needs a page.
 		$context = RequestContext::getMain();
+		$context->setTitle( Title::makeTitle( NS_MAIN, 'Test' ) );
 		$output = new OutputPage( $context );
 
 		$this->getServiceContainer()->getHookContainer()
