@@ -16,6 +16,10 @@ PHP_VERSION   ?= 8.3
 DB_TYPE       ?= mysql
 DB_IMAGE      ?= "mariadb:12.3"
 
+# extensions
+PF_REPO       ?= gesinn-it/mediawiki-extensions-PageForms
+PF_VERSION    ?= 2.5.1
+
 # composer
 COMPOSER_EXT  ?= true
 
