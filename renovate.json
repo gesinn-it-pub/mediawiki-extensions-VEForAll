@@ -1,0 +1,13 @@
+{
+	"$schema": "https://docs.renovatebot.com/renovate-schema.json",
+	"extends": [ "config:recommended" ],
+	"semanticCommits": "enabled",
+	"rebaseWhen": "behind-base-branch",
+	"packageRules": [
+		{
+			"matchPackageNames": [ "grunt-eslint" ],
+			"allowedVersions": "<25",
+			"description": "grunt-eslint 25+ bundles eslint 9+, but eslint-config-wikimedia 0.32.x requires eslint ^8.57 and .eslintrc.json is the legacy format."
+		}
+	]
+}
