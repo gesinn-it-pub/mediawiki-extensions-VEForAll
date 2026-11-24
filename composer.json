@@ -3,6 +3,7 @@
 	"type": "mediawiki-extension",
 	"require-dev": {
 		"mediawiki/mediawiki-codesniffer": "52.0.0",
+		"mediawiki/mediawiki-phan-config": "0.20.0",
 		"mediawiki/minus-x": "2.0.1",
 		"php-parallel-lint/php-console-highlighter": "1.0.0",
 		"php-parallel-lint/php-parallel-lint": "1.4.0"
@@ -26,6 +27,10 @@
 			"parallel-lint . --exclude vendor --exclude node_modules --exclude build",
 			"minus-x check ."
 		],
+		"analyze": [
+			"@phan"
+		],
+		"phan": "phan --allow-polyfill-parser --no-progress-bar",
 		"phpcs": "phpcs -sp --cache",
 		"phpunit": [
 			"Composer\\Config::disableProcessTimeout",
