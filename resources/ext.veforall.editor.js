@@ -26,8 +26,6 @@
 	 * @param {string} [content='']
 	 */
 	mw.veForAll.Editor = function ( $node, content ) {
-		let modules;
-
 		// mixin constructor
 		OO.EventEmitter.call( this );
 
@@ -42,7 +40,7 @@
 			.addClass( 'oo-ui-texture-pending' );
 
 		// The main module should already be loaded.
-		modules = mw.config.get( 'wgVisualEditorConfig' ).pluginModules.filter( mw.loader.getState );
+		const modules = mw.config.get( 'wgVisualEditorConfig' ).pluginModules.filter( mw.loader.getState );
 
 		// load dependencies & init editor
 		mw.loader.using( modules, this.init.bind( this, content || '' ) );
@@ -56,7 +54,8 @@
 	mw.veForAll.Editor.prototype.initCallbacks = [];
 
 	mw.veForAll.Editor.prototype.createTarget = function () {
-		let self = this, $wrapperNode, maxHeight;
+		const self = this;
+		let $wrapperNode, maxHeight;
 
 		if ( $( this.$node ).hasClass( 'toolbarOnTop' ) ) {
 			this.target = new mw.veForAll.Targetwide( this.$node, $( this.$node ).val() );
@@ -120,18 +119,16 @@
 	 * @return {string}
 	 */
 	mw.veForAll.Editor.prototype.getRawContent = function () {
-		let doc, html;
-
 		// If we haven't fully loaded yet, just return nothing.
 		if ( !this.target ) {
 			return '';
 		}
 
 		// get document from ve
-		doc = ve.dm.converter.getDomFromModel( this.dmDoc );
+		const doc = ve.dm.converter.getDomFromModel( this.dmDoc );
 
 		// document content will include html, head & body nodes; get only content inside body node
-		html = ve.properInnerHtml( $( doc.documentElement ).find( 'body' )[ 0 ] );
+		const html = ve.properInnerHtml( $( doc.documentElement ).find( 'body' )[ 0 ] );
 		return html;
 	};
 
@@ -161,8 +158,6 @@
 	};
 
 	mw.veForAll.Editor.prototype.moveCursorToEnd = function () {
-		let data, cursorPos;
-
 		if ( !this.target ) {
 			this.initCallbacks.push( function () {
 				this.moveCursorToEnd();
@@ -170,8 +165,8 @@
 			return;
 		}
 
-		data = this.target.surface.getModel().getDocument().data;
-		cursorPos = data.getNearestContentOffset( data.getLength(), -1 );
+		const data = this.target.surface.getModel().getDocument().data;
+		const cursorPos = data.getNearestContentOffset( data.getLength(), -1 );
 
 		this.target.surface.getModel().setSelection( new ve.Range( cursorPos ) );
 	};

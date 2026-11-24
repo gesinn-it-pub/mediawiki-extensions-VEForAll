@@ -205,7 +205,8 @@
 	};
 
 	mw.veForAll.Target.prototype.escapePipesInTables = function ( text ) {
-		let lines = text.split( '\n' ), i, curLine, withinTable = false;
+		const lines = text.split( '\n' );
+		let i, curLine, withinTable = false;
 
 		// This algorithm will hopefully work for all cases except
 		// when there are template calls within the table, and those
@@ -238,11 +239,10 @@
 	};
 
 	mw.veForAll.Target.prototype.convertToWikiText = function ( content ) {
-		let target = this,
+		const target = this,
 			oldFormat = 'html',
-			newFormat = 'wikitext',
-			apiCall,
-			wikitextVal;
+			newFormat = 'wikitext';
+		let wikitextVal;
 
 		$( this.$node )
 			.prop( 'disabled', true )
@@ -250,7 +250,7 @@
 
 		$( this.$element ).addClass( 'oo-ui-texture-pending' );
 
-		apiCall = new mw.Api().post( {
+		const apiCall = new mw.Api().post( {
 			action: 'veforall-parsoid-utils',
 			from: oldFormat,
 			to: newFormat,
