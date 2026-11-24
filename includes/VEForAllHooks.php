@@ -169,9 +169,6 @@ class VEForAllHooks {
 	/**
 	 * @param array &$vars
 	 * @param OutputPage $out
-	 *
-	 * @throws FatalError
-	 * @throws MWException
 	 */
 	public static function onMakeGlobalVariablesScript( &$vars, $out ) {
 		$vars[ 'VEForAllToolbarNormal' ] = self::getVeToolbarConfig( 'normal' );
@@ -182,8 +179,6 @@ class VEForAllHooks {
 	 * @param string $type
 	 *
 	 * @return array
-	 * @throws FatalError
-	 * @throws MWException
 	 */
 	public static function getVeToolbarConfig( $type = 'normal' ) {
 		// Hand the hooks a copy, so that their changes do not accumulate in the defaults.
