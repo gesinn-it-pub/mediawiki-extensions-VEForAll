@@ -1,48 +1,25 @@
-# Used elements
-# http://marmelab.com/blog/2016/02/29/auto-documented-makefile.html
-# http://unix.stackexchange.com/questions/217295/phony-all-rules-in-gnu-make-file
+-include .env
+export
 
-.DEFAULT_GOAL := help
+# setup for docker-compose-ci build directory
+# delete "build" directory to update docker-compose-ci
 
-.PHONY: install
-install: _npm _composer  ## Updates PHP / JS dependencies
-	@npm install
-	@composer install
-
-.PHONY: update
-update: _npm _composer ## Updates PHP / JS dependencies (writes composer.lock)
-	@npm update
-	@composer update
-
-# See https://www.mediawiki.org/wiki/Continuous_integration/Entry_points
-.PHONY: test
-test: _npm _composer ## Runs tests (see composer.json / Gruntfile.js)
-	@npm test
-	@composer test
-
-fix: _phpcbf
-	@vendor/bin/phpcbf
-
-################################################################################
-_COMPOSER := $(shell composer -V)
-_NPM := $(shell npm -v)
-_PHPCBF := $(shell vendor/bin/phpcbf --version)
-
-_npm:
-ifndef _COMPOSER
-	@printf "You can get npm @ https://nodejs.org/en/download/\n"
+ifeq (,$(wildcard ./build/))
+    $(shell git submodule update --init --remote)
 endif
 
-_composer:
-ifndef _NPM
-	@printf "You can get composer @ https://getcomposer.org/\n"
-endif
+EXTENSION = VEForAll
 
-_phpcbf:
-ifndef _PHPCBF
-	@printf "Please run composer install first\n"
-endif
+# docker images
+MW_VERSION    ?= 1.43
+PHP_VERSION   ?= 8.3
+DB_TYPE       ?= mysql
+DB_IMAGE      ?= "mysql:8"
 
-.PHONY: help
-help:
-	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-10s\033[0m %s\n", $$1, $$2}'
+# composer
+COMPOSER_EXT  ?= true
+
+# nodejs
+NODE_JS       ?= true
+
+include build/Makefile
