@@ -40,6 +40,25 @@
 			"parserOptions": {
 				"sourceType": "script"
 			}
+		},
+		{
+			"files": [
+				"tests/browser/**/*.js"
+			],
+			"env": {
+				"node": true,
+				"browser": true,
+				"es2021": true
+			},
+			"parserOptions": {
+				"ecmaVersion": 2022
+			},
+			"rules": {
+				"no-console": "off",
+				"n/no-process-exit": "off",
+				"es-x/no-async-functions": "off",
+				"es-x/no-object-values": "off"
+			}
 		}
 	]
 }

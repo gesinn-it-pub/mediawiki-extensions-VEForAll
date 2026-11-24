@@ -25,6 +25,7 @@ jobs:
             database_type: mysql
             database_image: "mariadb:12.3"
             coverage: true
+            browser: true
             experimental: false
           - mediawiki_version: '1.46'
             php_version: '8.4'
@@ -38,6 +39,7 @@ jobs:
       PHP_VERSION: ${{ matrix.php_version }}
       DB_TYPE: ${{ matrix.database_type }}
       DB_IMAGE: ${{ matrix.database_image }}
+      BROWSER_TESTS: ${{ matrix.browser }}
       PF_REPO: gesinn-it/mediawiki-extensions-PageForms
       PF_VERSION: '2.5.1'
 
@@ -53,6 +55,10 @@ jobs:
       - name: Run CI with coverage
         run: mkdir -p build/coverage && make ci-coverage
         if: matrix.coverage == true
+
+      - name: Run browser test
+        run: make browser-test
+        if: matrix.browser == true
 
       - name: Run Phan
         if: matrix.coverage == true
