@@ -15,10 +15,7 @@
 	function initVisualEditor() {
 		// Init VisualEditor platform
 		new ve.init.mw.Platform().initialize()
-			.fail( () => {
-				// $( editor ).text( 'Sorry, this browser is not supported.' );
-			} )
-			.done( () => {
+			.then( () => {
 				// Add i18n messages to VE
 				ve.init.platform.addMessages( mw.messages.get() );
 			} );

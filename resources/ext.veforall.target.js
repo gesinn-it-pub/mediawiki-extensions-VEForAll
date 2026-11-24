@@ -287,8 +287,6 @@
 
 			$( target.$element ).removeClass( 'oo-ui-texture-pending' );
 
-		} ).fail( () => {
-			// console.log( 'Error converting to wikitext' );
 		} );
 
 		return apiCall;
@@ -327,8 +325,6 @@
 				callback( target );
 			}
 
-		} ).fail( () => {
-			// console.log( 'Error converting to html' );
 		} );
 	};
 
