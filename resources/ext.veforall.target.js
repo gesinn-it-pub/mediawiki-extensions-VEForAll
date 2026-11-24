@@ -76,16 +76,18 @@
 
 	// Static methods
 	mw.veForAll.Target.static.setSwitchable = function ( switchable ) {
+		const targetStatic = mw.veForAll.Target.static;
+
 		// FIXME this isn't supposed to be a global state thing, it's supposed to be
 		// variable per EditorWidget instance
 
 		// Remove any existing switch-related groups from toolbarGroups
-		mw.veForAll.Target.static.toolbarGroups = mw.veForAll.Target.static.toolbarGroups.filter(
+		targetStatic.toolbarGroups = targetStatic.toolbarGroups.filter(
 			( group ) => group.name !== 've4aSwitch'
 		);
 
 		if ( switchable ) {
-			mw.veForAll.Target.static.toolbarGroups = mw.veForAll.Target.static.toolbarGroups.concat( [ {
+			targetStatic.toolbarGroups = targetStatic.toolbarGroups.concat( [ {
 				name: 've4aSwitch',
 				type: 'list',
 				align: 'after',
