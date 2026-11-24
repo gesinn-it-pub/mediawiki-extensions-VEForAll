@@ -319,38 +319,38 @@
 	};
 
 	mw.veForAll.Target.prototype.switchEditor = function () {
-		const textarea = this.$node,
+		const $textarea = this.$node,
 			target = this;
 
-		if ( $( textarea ).is( ':visible' ) ) {
+		if ( $textarea.is( ':visible' ) ) {
 			// Switch to VE editor
 
 			this.clearSurfaces();
-			// $( textarea ).hide();
+			// $textarea.hide();
 			// $(this.getSurface().$element).show();
-			this.convertToHtml( $( textarea ).val(), ( target ) => {
+			this.convertToHtml( $textarea.val(), ( target ) => {
 				target.getSurface().getView().focus();
 			} );
 
-			$( textarea ).parent().find( '.oo-ui-icon-eye' )
+			$textarea.parent().find( '.oo-ui-icon-eye' )
 				.removeClass( 'oo-ui-icon-eye' )
 				.addClass( 'oo-ui-icon-wikiText' );
 
-			$( textarea ).parent().find( '.oo-ui-tool-link' )
+			$textarea.parent().find( '.oo-ui-tool-link' )
 				.attr( 'title', OO.ui.deferMsg( 'veforall-switch-editor-tool-title' ) );
 		} else {
 			// Switch to markup editor
 
-			$( textarea ).parent().find( '.oo-ui-icon-wikiText' )
+			$textarea.parent().find( '.oo-ui-icon-wikiText' )
 				.removeClass( 'oo-ui-icon-wikiText' )
 				.addClass( 'oo-ui-icon-eye' );
 
-			$( textarea ).parent().find( '.oo-ui-tool-link' )
+			$textarea.parent().find( '.oo-ui-tool-link' )
 				.attr( 'title', OO.ui.deferMsg( 'visualeditor-welcomedialog-switch-ve' ) );
 
 			this.updateContent().then( () => {
 				$( target.getSurface().$element ).hide();
-				$( textarea ).show().trigger( 'focus' );
+				$textarea.show().trigger( 'focus' );
 			} );
 		}
 	};

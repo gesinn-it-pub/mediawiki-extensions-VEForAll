@@ -61,13 +61,15 @@
 	mw.hook( 'pf.formValidation' ).add( ( args ) => {
 		let hasMinimizedPlainVETextarea = false;
 		$( '.minimized' ).each( function () {
-			const instanceDiv = $( this );
-			instanceDiv.find( 'textarea.vePartOfTemplate' ).each( function () {
+			const $instanceDiv = $( this );
+			$instanceDiv.find( 'textarea.vePartOfTemplate' ).each( function () {
 				if ( $( this ).css( 'display' ) !== 'none' ) {
-					instanceDiv.removeClass( 'minimized' );
-					instanceDiv.find( '.fieldValuesDisplay' ).html( '' );
-					instanceDiv.find( '.instanceMain' ).fadeIn();
-					instanceDiv.find( '.fieldValuesDisplay' ).remove();
+					$instanceDiv.removeClass( 'minimized' );
+					$instanceDiv.find( '.fieldValuesDisplay' ).html( '' );
+					// Keep the animation of the original code; replacing it needs browser tests.
+					// eslint-disable-next-line no-jquery/no-fade
+					$instanceDiv.find( '.instanceMain' ).fadeIn();
+					$instanceDiv.find( '.fieldValuesDisplay' ).remove();
 					hasMinimizedPlainVETextarea = true;
 				}
 			} );
