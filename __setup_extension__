@@ -1,1 +1,5 @@
 wfLoadExtension( 'VisualEditor' );
+
+// The browser test saves pages as an anonymous user, several times when it is run again soon.
+// Without this right MediaWiki rejects the edits as too frequent.
+$wgGroupPermissions['*']['noratelimit'] = true;
