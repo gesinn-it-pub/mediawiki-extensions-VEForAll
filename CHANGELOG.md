@@ -24,6 +24,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Show the switch between the visual and the wikitext editor again in editors with the class `toolbarOnTop` (missing since 0.8.1) [`2df7f4b`](https://github.com/gesinn-it-pub/mediawiki-extensions-VEForAll/commit/2df7f4b)
+- Make `setSwitchable()` change the editors with the class `toolbarOnTop` as well (it had no effect on them since 0.8.1) [`9bd543f`](https://github.com/gesinn-it-pub/mediawiki-extensions-VEForAll/commit/9bd543f)
 - Stop `focus()` and `moveCursorToEnd()` calls made before VisualEditor is ready from also running in editors created later [`a3851df`](https://github.com/gesinn-it-pub/mediawiki-extensions-VEForAll/commit/a3851df)
 - Fix changes of `VEForAllToolbarConfigNormal` and `VEForAllToolbarConfigWide` hook handlers piling up and affecting later toolbar configurations [`98b9b46`](https://github.com/gesinn-it-pub/mediawiki-extensions-VEForAll/commit/98b9b46)
 - Log API usage errors as text instead of an object [`96d5fe5`](https://github.com/gesinn-it-pub/mediawiki-extensions-VEForAll/commit/96d5fe5)
